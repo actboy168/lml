@@ -1,11 +1,11 @@
 package.cpath = package.cpath .. [[;.\..\bin\Debug\?.dll]]
 
-local lni = require 'lml'
+local lml = require 'lml'
 local print_r = require 'print_r'
 
 function LOAD(filename)
 	local f = assert(io.open(filename, 'rb'))
-	local r = lni(f:read 'a')
+	local r = lml(f:read 'a')
 	f:close()
 	return r
 end
@@ -24,7 +24,7 @@ local n = 0
 local function TEST(script, t)
 	n = n + 1
 	local name = 'TEST-' .. n
-	local r = lni(script, name)
+	local r = lml(script, name)
 	local ok, e = pcall(EQUAL, r, t)
 	if not ok then
 		print(script)
@@ -50,15 +50,22 @@ end
 TEST(
 [==[
 TEST
-  A
-TEST
-  B
 ]==]
 ,
 {
 '', false,
-{ 'TEST', false, {'A'}},
-{ 'TEST', false, {'B'}},
+{ 'TEST' },
+}
+)
+
+TEST(
+[==[
+TEST: STATE
+]==]
+,
+{
+'', false,
+{ 'TEST', 'STATE' },
 }
 )
 
@@ -72,6 +79,62 @@ TEST
 {
 '', false,
 { 'TEST', false, {'A'}, {'B'}}
+}
+)
+
+TEST(
+[==[
+TEST: STATE
+  A
+  B
+]==]
+,
+{
+'', false,
+{ 'TEST', 'STATE', {'A'}, {'B'}}
+}
+)
+
+
+TEST(
+[==[
+TEST: STATE
+  A: STATE_A
+  B: STATE_B
+]==]
+,
+{
+'', false,
+{ 'TEST', 'STATE', {'A', 'STATE_A'}, {'B', 'STATE_B'}}
+}
+)
+
+TEST(
+[==[
+TEST: STATE
+  A: STATE_A
+    A1
+    A2
+  B: STATE_B
+    B1
+    B2
+]==]
+,
+{
+'', false,
+{ 'TEST', 'STATE', {'A', 'STATE_A', {'A1'}, {'A2'}}, {'B', 'STATE_B', {'B1'}, {'B2'}}}
+}
+)
+
+
+TEST(
+[==[
+'TE:ST': '''A000'''
+]==]
+,
+{
+'', false,
+{ 'TE:ST', "'A000'"}
 }
 )
 
