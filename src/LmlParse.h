@@ -83,7 +83,7 @@ namespace lml {
 					}
 				}
 				if (*z != del) {
-					h.accept_string(start, z - start, false);
+					h.accept_string(start, z - start - 1, false);
 					break;
 				}
 				h.accept_string(start, z - start, true);
