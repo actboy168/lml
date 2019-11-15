@@ -1,4 +1,5 @@
-package.cpath = package.cpath .. [[;.\..\bin\Debug\?.dll]]
+package.path = [[.\test\?.lua]]
+package.cpath = [[.\build\msvc\bin\?.dll]]
 
 local lml = require 'lml'
 local print_r = require 'print_r'
